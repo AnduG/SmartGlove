@@ -2,7 +2,7 @@
 #include <Wire.h>
 
 void tca9548_init() {
-  Wire.begin(SDA_Pin, SCL_Pin);
+  Wire.begin(SDA_PIN, SCL_PIN);
 }
 
 void tca9548_select(uint8_t i) {
