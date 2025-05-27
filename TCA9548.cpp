@@ -1,5 +1,7 @@
-#include "TCA9548.h"
+
 #include <Wire.h>
+
+#include "TCA9548.h"
 
 void tca9548_init() {
   Wire.begin(SDA_PIN, SCL_PIN);
