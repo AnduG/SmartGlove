@@ -1,11 +1,11 @@
 #ifndef INTERPRETER_H
 #define INTERPRETER_H
 
-#define CLASSES 30
+#define CLASSES 29
 #define INPUTS 18
 
-float weights[CLASSES][INPUTS];
-float bias[CLASSES];
+extern float weights[CLASSES][INPUTS];
+extern float bias[CLASSES];
 
 int classify(float values[INPUTS]);
 
