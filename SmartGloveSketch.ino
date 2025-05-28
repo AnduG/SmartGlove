@@ -7,7 +7,7 @@
 #include "interpreter.h"
 
 
-#define FUNCTION_MODE 1
+#define FUNCTION_MODE 2
 // FUNCTION_MODE 1 => Learning/Recoding
 // FUNCTION_MODE 2 => Interpreting Mode
 
@@ -21,10 +21,11 @@ MPU6500 pinky_unit(3);
 #define LED_PIN 26
 
 #define BUTTON_PIN 14
-#define DEBOUNCE_THRESHOLD 10
+#define DEBOUNCE_THRESHOLD 500
 
 volatile bool buttonPressed = false; 
-volatile uint32_t last_interrupt = 0; 
+volatile uint32_t last_interrupt = 0;
+int press_count;
 
 void IRAM_ATTR handleButtonInterrupt() {
   uint32_t current = millis();
@@ -101,8 +102,9 @@ void setup() {
 
   Serial.println("Done.");
   if (FUNCTION_MODE == 1) {
-    Serial.println("x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4,x5,y5,z5,x6,y6,z6,letter");
+    Serial.println("idx,x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4,x5,y5,z5,x6,y6,z6,letter");
   }
+  press_count = 0;
 }
 
 void print_angles(MPU6500 &unit) {
@@ -118,12 +120,15 @@ void print_angles(MPU6500 &unit) {
 void record_loop() {
   if (buttonPressed) {
     buttonPressed = false;
+    Serial.print(press_count);
+    Serial.print(',');
     print_angles(ref_unit);
     print_angles(thumb_unit);
     print_angles(index_unit);
     print_angles(middle_unit);
     print_angles(ring_unit);
     print_angles(pinky_unit);
+    press_count++;
     Serial.println();
   }
 }
@@ -155,6 +160,8 @@ void interpret_loop() {
   } else {
     uint32_t now = millis();
     if (now - active_start > 2000 && !already_used_class) {
+      already_used_class = true;
+      Serial.println(cls);
       if (cls == -1) {
         digitalWrite(LED_PIN, LOW);
       } else {
